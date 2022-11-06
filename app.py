@@ -12,12 +12,12 @@ import tab2
 class db:
     def __init__(self):
         self.transactions = db.transation_init()
-        self.cc = pd.read_csv(r'db\country_codes.csv',index_col=0)
-        self.customers = pd.read_csv(r'db\customers.csv',index_col=0)
-        self.prod_info = pd.read_csv(r'db\prod_cat_info.csv')
+        self.cc = pd.read_csv(r'C:\Users\pawit\OneDrive\Pulpit\kodilla_env\Dashboard\db\country_codes.csv',index_col=0)
+        self.customers = pd.read_csv(r'C:\Users\pawit\OneDrive\Pulpit\kodilla_env\Dashboard\db\customers.csv',index_col=0)
+        self.prod_info = pd.read_csv(r'C:\Users\pawit\OneDrive\Pulpit\kodilla_env\Dashboard\db\prod_cat_info.csv')
     def transation_init():
         transactions = pd.DataFrame()
-        src = r'db\transactions'
+        src = r'C:\Users\pawit\OneDrive\Pulpit\kodilla_env\Dashboard\db\transactions'
         for filename in os.listdir(src):
             transactions = transactions.append(pd.read_csv(os.path.join(src,filename),index_col=0))
 
@@ -44,11 +44,17 @@ def merge(self):
     self.merged = df
 
 df = db()
-df.merge()
+df.merge #nie powinno być merge(df)?
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+app.layout = html.Div([],
+                    style={'height':'100%'})
+
+app.layout = html.Div([html.Div([],style={'width':'80%','margin':'auto'})],
+                    style={'height':'100%'})
 
 [dcc.Tabs(id='tabs',value='tab-1',children=[
                             dcc.Tab(label='Sprzedaż globalna',value='tab-1'),
