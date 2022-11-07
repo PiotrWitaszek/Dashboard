@@ -15,35 +15,32 @@ class db:
         self.cc = pd.read_csv(r'country_codes.csv',index_col=0)
         self.customers = pd.read_csv(r'customers.csv',index_col=0)
         self.prod_info = pd.read_csv(r'prod_cat_info.csv')
-
-@staticmethod       
-def transation_init():
-    transactions = pd.DataFrame()
-    src = r'transactions'
-    for filename in os.listdir(src):
-        transactions = transactions.append(pd.read_csv(os.path.join(src,filename),index_col=0))
-
+    @staticmethod       
+    def transation_init():
+        transactions = pd.DataFrame()
+        src = r'transactions'
+        for filename in os.listdir(src):
+            transactions = transactions.append(pd.read_csv(os.path.join(src,filename),index_col=0))
     def convert_dates(x):
         try:
             return dt.datetime.strptime(x,'%d-%m-%Y')
         except:
             return dt.datetime.strptime(x,'%d/%m/%Y')
 
-    transactions['tran_date'] = transactions['tran_date'].apply(lambda x: convert_dates(x))
+        transactions['tran_date'] = transactions['tran_date'].apply(lambda x: convert_dates(x))
 
-    return transactions
+        return transactions
+    def merge(self):
+        df = self.transactions.join(self.prod_info.drop_duplicates(subset=['prod_cat_code'])
+        .set_index('prod_cat_code')['prod_cat'],on='prod_cat_code',how='left')
 
-def merge(self):
-    df = self.transactions.join(self.prod_info.drop_duplicates(subset=['prod_cat_code'])
-    .set_index('prod_cat_code')['prod_cat'],on='prod_cat_code',how='left')
+        df = df.join(self.prod_info.drop_duplicates(subset=['prod_sub_cat_code'])
+        .set_index('prod_sub_cat_code')['prod_subcat'],on='prod_subcat_code',how='left')
 
-    df = df.join(self.prod_info.drop_duplicates(subset=['prod_sub_cat_code'])
-    .set_index('prod_sub_cat_code')['prod_subcat'],on='prod_subcat_code',how='left')
+        df = df.join(self.customers.join(self.cc,on='country_code')
+        .set_index('customer_Id'),on='cust_id')
 
-    df = df.join(self.customers.join(self.cc,on='country_code')
-    .set_index('customer_Id'),on='cust_id')
-
-    self.merged = df
+        self.merged = df
 
 df = db()
 df.merge #każda funkcja pandas (merge, join itd) wiąże się z błędem object has no attribute
@@ -136,6 +133,14 @@ USERNAME_PASSWORD = [['user','pass']]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 auth = dash_auth.BasicAuth(app,USERNAME_PASSWORD)
+
+#@app.route('/', methods=['GET', 'POST'])
+#def index():
+ #   if request.method == 'POST':
+  #      model.save()
+   #     # Failure to return a redirect or render_template
+    #else:
+     #   return render_template('index.html')
 
 if __name__ == '__main__':
     app.run_server(debug=True)
