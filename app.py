@@ -134,7 +134,8 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 auth = dash_auth.BasicAuth(app,USERNAME_PASSWORD)
 
-#@app.route('/', methods=['GET', 'POST'])
+#Czy mniej więcej w ten sposob rozwiązać problem layout was `None` at the time that `run_server` was called?
+# @app.route('/', methods=['GET', 'POST'])
 #def index():
  #   if request.method == 'POST':
   #      model.save()
