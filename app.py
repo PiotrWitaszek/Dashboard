@@ -15,11 +15,13 @@ class db:
         self.cc = pd.read_csv(r'country_codes.csv',index_col=0)
         self.customers = pd.read_csv(r'customers.csv',index_col=0)
         self.prod_info = pd.read_csv(r'prod_cat_info.csv')
-    def transation_init():
-        transactions = pd.DataFrame()
-        src = r'transactions'
-        for filename in os.listdir(src):
-            transactions = transactions.append(pd.read_csv(os.path.join(src,filename),index_col=0))
+
+@staticmethod       
+def transation_init():
+    transactions = pd.DataFrame()
+    src = r'transactions'
+    for filename in os.listdir(src):
+        transactions = transactions.append(pd.read_csv(os.path.join(src,filename),index_col=0))
 
     def convert_dates(x):
         try:
@@ -27,9 +29,9 @@ class db:
         except:
             return dt.datetime.strptime(x,'%d/%m/%Y')
 
-        transactions['tran_date'] = transactions['tran_date'].apply(lambda x: convert_dates(x))
+    transactions['tran_date'] = transactions['tran_date'].apply(lambda x: convert_dates(x))
 
-        return transactions
+    return transactions
 
 def merge(self):
     df = self.transactions.join(self.prod_info.drop_duplicates(subset=['prod_cat_code'])
