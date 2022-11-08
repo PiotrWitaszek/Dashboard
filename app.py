@@ -15,17 +15,18 @@ class db:
         self.cc = pd.read_csv(r'country_codes.csv',index_col=0)
         self.customers = pd.read_csv(r'customers.csv',index_col=0)
         self.prod_info = pd.read_csv(r'prod_cat_info.csv')
-    @staticmethod       
+    @staticmethod
     def transation_init():
         transactions = pd.DataFrame()
         src = r'transactions'
         for filename in os.listdir(src):
             transactions = transactions.append(pd.read_csv(os.path.join(src,filename),index_col=0))
-    def convert_dates(x):
-        try:
-            return dt.datetime.strptime(x,'%d-%m-%Y')
-        except:
-            return dt.datetime.strptime(x,'%d/%m/%Y')
+
+        def convert_dates(x):
+            try:
+                return dt.datetime.strptime(x,'%d-%m-%Y')
+            except:
+                return dt.datetime.strptime(x,'%d/%m/%Y')
 
         transactions['tran_date'] = transactions['tran_date'].apply(lambda x: convert_dates(x))
 
@@ -43,26 +44,11 @@ class db:
         self.merged = df
 
 df = db()
-df.merge #każda funkcja pandas (merge, join itd) wiąże się z błędem object has no attribute
+df.merge 
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-app.layout = html.Div([],
-                    style={'height':'100%'})
-
-app.layout = html.Div([html.Div([],style={'width':'80%','margin':'auto'})],
-                    style={'height':'100%'})
-
-[dcc.Tabs(id='tabs',value='tab-1',children=[
-                            dcc.Tab(label='Sprzedaż globalna',value='tab-1'),
-                            dcc.Tab(label='Produkty',value='tab-2')
-                            ]),
-                            html.Div(id='tabs-content')]
-
-app.layout = html.Div([html.Div([],style={'width':'80%','margin':'auto'})],
-                    style={'height':'100%'})
     
 app.layout = html.Div([html.Div([dcc.Tabs(id='tabs',value='tab-1',children=[
                             dcc.Tab(label='Sprzedaż globalna',value='tab-1'),
@@ -71,7 +57,7 @@ app.layout = html.Div([html.Div([dcc.Tabs(id='tabs',value='tab-1',children=[
                             html.Div(id='tabs-content')
                     ],style={'width':'80%','margin':'auto'})],
                     style={'height':'100%'})
-
+## tab1 callbacks
 @app.callback(Output('tabs-content','children'),[Input('tabs','value')])
 def render_content(tab):
 
@@ -80,7 +66,7 @@ def render_content(tab):
     elif tab == 'tab-2':
         return tab2.render_tab(df.merged)
 
-## tab1 callbacks
+
 @app.callback(Output('bar-sales','figure'),
     [Input('sales-range','start_date'),Input('sales-range','end_date')])
 
@@ -128,20 +114,14 @@ def tab2_barh_prod_subcat(chosen_cat):
     data = traces
     fig = go.Figure(data=data,layout=go.Layout(barmode='stack',margin={'t':20,}))
     return fig
+
+
+
 USERNAME_PASSWORD = [['user','pass']]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 auth = dash_auth.BasicAuth(app,USERNAME_PASSWORD)
-
-#Czy mniej więcej w ten sposob rozwiązać problem layout was `None` at the time that `run_server` was called?
-# @app.route('/', methods=['GET', 'POST'])
-#def index():
- #   if request.method == 'POST':
-  #      model.save()
-   #     # Failure to return a redirect or render_template
-    #else:
-     #   return render_template('index.html')
 
 if __name__ == '__main__':
     app.run_server(debug=True)
