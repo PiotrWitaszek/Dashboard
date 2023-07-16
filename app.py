@@ -119,7 +119,7 @@ def tab2_barh_prod_subcat(chosen_cat):
 
 USERNAME_PASSWORD = [['user','pass']]
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
 
 auth = dash_auth.BasicAuth(app,USERNAME_PASSWORD)
 
